@@ -122,7 +122,6 @@ Application = {
 
   startAlgorithm : function(){
     var that = this;
-    ++that.stepCount;
     (function myLoop (i, b) {
        that.algorithmTimeout = setTimeout(function () {
           --i;
@@ -130,13 +129,13 @@ Application = {
             if (i != -1){
               if(!that.isSatisfiedUser[i]){
                 that.recommend(i, b, i);
+				++that.stepCount;
 
                 that.inIgnoreList.push(b); // hogy ne valasszuk ki megegyszer ezt az indexet
                 that.repairConsistencyGraph(b);
               }
               myLoop(i, b);      //  decrement i and call myLoop again if i > 0
             }else if(that.hasUnsatisfiedUsers()){
-              ++that.stepCount;
               if(!that.oneStep)
                 myLoop(that.users.length, that.selectMostPopularItemFromUnsatisfiedUsers());
             }
