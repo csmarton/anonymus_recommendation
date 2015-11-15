@@ -200,41 +200,27 @@ Application = {
     var v = {};
     if(this.isSatisfiable(user,v)){ //ez itt nem tagadas
       this.isSatisfiedUser[i] = true;
-      this.removeUnsatisfiedEdges(v);
-
     }
   },
 
-  removeUnsatisfiedEdges : function(v){
-    for(k = 0; k < this.vectors.length; ++k){
-      if(k != v.index){
-        var removeEdge = this.edges[i][k];
-        /*if(this.graph.getConnectedEdges(removeEdge.to).length == 1){ // this is the last edge to this node
-          this.removeUnsatisfiedEdges(k);
-          return;
-        }*/
-        //this.graphEdges.remove(removeEdge);
-        this.graphEdges.update({id : removeEdge.id, color:"red"});
-      }
-    }
-  },
 
   //ez az akar lenni, hogy a user akkor kielegitheto, ha minden helyen, ahol a vektor 1-es, ott a user is 1-es, (fontos hogy nem forditva)
   isSatisfiable(user, v){
 	  var satisfiable = true;
+	  var count = 0;
     for(var i = 0; i<this.vectors.length; i++){
   	  var satisfiable = true;
         for(var j = 0; j<this.vectors[i].length; j++){
-  	    if((user[j] == -1 && this.vectors[i][j] == 1) || (user[j] != -1 && user[j] != this.vectors[i][j])){
+  	    if((user[j] != -1 && user[j] != this.vectors[i][j])){
             satisfiable = false;
           }
         }
   	  if(satisfiable == true){
         v.index = i;
-  		  return true;
+		    count++;
   	  }
     }
-    return false;
+	return count == 1;
   },
 
 
