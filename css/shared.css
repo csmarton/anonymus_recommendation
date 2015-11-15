@@ -42,9 +42,16 @@
 #select-test-case{
   width:auto;
 }
-#step-count-box{
+#step-count-box,
+#b-box{
   display: inline;
   float: right;
+  padding-left:10px;
+}
+#step-count,
+#b-value{
+  font-weight: bold;
+  color:red;
 }
 tr.satified{
   background-color: green;

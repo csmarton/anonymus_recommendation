@@ -22,11 +22,18 @@ Application = {
   algorithmTimeout : null,
   oneStep : true,
   stepCount : 0,
+  bValue : null,
+  actualAlgorithmData : {
+    val : -1,
+    b : -1
+  },
+  end : false,
 
   init : function(){
     this.matrix = Matrices.matrix1;
     this.setEventListener();
     this.initVector();
+    console.log(this.actualAlgorithmData);
     this.constructConsistencyGraph(this.users, this.vectors);
   },
   // main function
@@ -42,13 +49,13 @@ Application = {
   constructConsistencyGraph : function(users, vectors){
     // add user nodes
     for(var i = 0; i < this.matrix.length; ++i){
-      var node = {id: i, label: 'u' + (i+1), font:{size:30}};
+      var node = {id: i, label: 'u' + (i+1), font:{size:30}, group:'userGroup'};
       this.userNodes[i] = node;
     }
 
     // add user preference node
     for(var i = 0; i < this.matrix.length; ++i){
-      var node = {id: (this.userNodes.length + i), label: 'v' + (i+1), font:{size:30}};
+      var node = {id: (this.userNodes.length + i), label: 'v' + (i+1), font:{size:30}, group:'vectorGroup'};
       this.preferenceNodes[i] = node;
     }
 
@@ -91,7 +98,8 @@ Application = {
       layout: {
         hierarchical: {
           sortMethod: "directed",
-          direction: "LR"
+          direction: "LR",
+          levelSeparation : 500,
         }
       },
       edges: {
@@ -111,7 +119,17 @@ Application = {
       },
       physics:{
         enabled: true,
-      }
+      },
+      /*groups: {
+        userGroup: {
+          shape: 'circle',
+          color : 'red'
+        },
+        vectorGroup: {
+          shape: 'circle',
+          font:{size:50}
+        }
+      }*/
     };
     this.graph = new vis.Network(container, data, options);
 
@@ -127,30 +145,45 @@ Application = {
 
   drawStepCount : function(){
     $('#step-count').html(this.stepCount);
+    $('#b-value').html(this.bValue);
   },
 
   startAlgorithm : function(){
     var that = this;
-    (function myLoop (i, b) {
-       that.algorithmTimeout = setTimeout(function () {
-          --i;
-          if(b != undefined)
-            if (i != -1){
-              if(!that.isSatisfiedUser[i]){
-                that.recommend(i, b, i);
-				++that.stepCount;
-
-                that.inIgnoreList.push(b); // hogy ne valasszuk ki megegyszer ezt az indexet
-                that.repairConsistencyGraph(b);
-              }
-              myLoop(i, b);      //  decrement i and call myLoop again if i > 0
-            }else if(that.hasUnsatisfiedUsers()){
-              if(!that.oneStep)
-                myLoop(that.users.length, that.selectMostPopularItemFromUnsatisfiedUsers());
+    if(that.hasUnsatisfiedUsers())
+      (function myLoop (i, b) {
+         that.algorithmTimeout = setTimeout(function () {
+           that.bValue = b + 1;
+            --i;
+            that.actualAlgorithmData= {
+              val: i == -1? that.users.length : i,
+              b : b
             }
+            if(b != undefined && b != -1)
+              if (i != -1){
+                while(that.isSatisfiedUser[i])
+                  --i;
+                if(i != -1){
+                  if(!that.isSatisfiedUser[i]){
+                    that.recommend(i, b, i);
+    	              ++that.stepCount;
 
-       }, 200)
-    })(that.users.length, that.selectMostPopularItemFromUnsatisfiedUsers());
+                    that.inIgnoreList.push(b); // hogy ne valasszuk ki megegyszer ezt az indexet
+                    that.repairConsistencyGraph(b);
+                  }
+                }
+                if(!that.oneStep)
+                  myLoop(i, b);      //  decrement i and call myLoop again if i > 0
+              }else if(that.hasUnsatisfiedUsers()){
+                that.actualAlgorithmData = {
+                  val : that.users.length,
+                  b : that.selectMostPopularItemFromUnsatisfiedUsers()
+                };
+                myLoop(that.actualAlgorithmData.val, that.actualAlgorithmData.b);
+              }
+
+         }, 200)
+      })(that.actualAlgorithmData.val, that.actualAlgorithmData.b);
   },
 
   repairConsistencyGraph : function(uInd){
@@ -282,6 +315,7 @@ Application = {
       this.isSatisfiedUser[i] = false;
     }
 
+    this.actualAlgorithmData = {val: this.users.length, b: this.selectMostPopularItemFromUnsatisfiedUsers() };
   },
 
 
@@ -309,8 +343,11 @@ Application = {
     this.initUserMatrix();
     this.constructConsistencyGraph(this.users, this.vectors);
     this.stepCount = 0;
+    this.bValue = null;
     this.oneStep = true;
     this.drawStepCount();
+    //this.actualAlgorithmData = {val: this.users.length, b: this.selectMostPopularItemFromUnsatisfiedUsers() };
+    $('#user-matrix tr').removeClass('satified');
   },
 
   changeTestCases: function(val){
@@ -333,6 +370,7 @@ Application = {
     this.initVector();
     this.constructConsistencyGraph(this.users, this.vectors);
     this.stepCount = 0;
+    this.bValue = null;
     this.drawStepCount();
   },
 
@@ -353,6 +391,7 @@ Application = {
 
     $("body").on('click', '#start', function() {
       that.stepCount = 0;
+      that.bValue = null;
       that.oneStep = false;
       that.start();
     });
