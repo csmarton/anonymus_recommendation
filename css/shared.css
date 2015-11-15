@@ -1,0 +1,48 @@
+.clear{
+  clear:both;
+}
+.navbar .container{
+  margin-top: 10px;
+}
+.navbar input,
+.navbar select{
+  margin: 0px 5px
+}
+.matrix-content{
+
+}
+.matrix-content td{
+  margin: 5px;
+  border: 1px solid grey;
+  width: 1.5em;
+  height: 1.5em;
+  font-size: 2em;
+  text-align: center;
+}
+
+#user-matrix{
+  /*float:left;*/
+}
+#vector-matrix{
+  /*float:right;*/
+}
+
+#diagram {
+  margin: 50px 0px;
+  width: 1024;
+  height: 800px;
+  border: 1px solid lightgray;
+}
+
+.matrix-box{
+  display: inline-table;
+  padding: 10px;
+}
+
+#select-test-case{
+  width:auto;
+}
+#step-count-box{
+  display: inline;
+  float: right;
+}

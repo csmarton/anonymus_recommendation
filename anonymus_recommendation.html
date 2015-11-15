@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Anonymous Recommendations</title>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/sticky-footer-navbar.css">
+    <link rel="stylesheet" type="text/css" href="css/shared.css">
+    <link rel="stylesheet" type="text/css" href="css/vis.min.css">
+
+    <script src="js/jquery-1.11.3.min.js"></script>
+    <script src="js/vis.min.js"></script>
+    <script src="js/Matrices.js"></script>
+    <script src="js/Application.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        Application.init();
+      });
+    </script>
+  </head>
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+        <div>
+          <input type="button"  class="btn btn-primary" id="start" value="Start"/>
+          <input type="button"  class="btn btn-primary" id="next-step" value="Next step"/>
+          <input type="button"  class="btn btn-primary" id="clear" value="Clear"/>
+          <select  id="select-test-case" class="form-control col-xs-2">
+            <option value="1">Test 1</option>
+            <option value="2">Test 2</option>
+          </select>
+          <div id="step-count-box">
+            Step count: <span id="step-count"></span>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Begin page content -->
+    <div class="container">
+      <div class="page-header">
+        <h1>Ignorat vs. Anonymous Recommendations</h1>
+      </div>
+      <div id="matrices">
+        <div class="matrix-box">
+          <h5>User-matrix:</h5>
+          <div id="user-matrix" class="matrix-content"></div>
+        </div>
+        <div class="matrix-box">
+          <h5>Vector-matrix:</h5>
+          <div id="vector-matrix" class="matrix-content"></div>
+        </div>
+        <div class="matrix-box">
+          <h5>Original-matrix:</h5>
+          <div id="original-matrix" class="matrix-content"></div>
+        </div>
+      </div>
+      <div id="diagram"></div>
+    </div>
+
+    <footer class="footer">
+      <div class="container">
+        <p class="text-muted">Készítette: Csordás Márton, Szabó Bence János</p>
+      </div>
+    </footer>
+  </body>
+</html>
