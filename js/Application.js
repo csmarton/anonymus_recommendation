@@ -42,13 +42,13 @@ Application = {
   constructConsistencyGraph : function(users, vectors){
     // add user nodes
     for(var i = 0; i < this.matrix.length; ++i){
-      var node = {id: i, label: 'u' + (i+1)};
+      var node = {id: i, label: 'u' + (i+1), font:{size:30}};
       this.userNodes[i] = node;
     }
 
     // add user preference node
     for(var i = 0; i < this.matrix.length; ++i){
-      var node = {id: (this.userNodes.length + i), label: 'v' + (i+1)};
+      var node = {id: (this.userNodes.length + i), label: 'v' + (i+1), font:{size:30}};
       this.preferenceNodes[i] = node;
     }
 
@@ -60,7 +60,7 @@ Application = {
       this.edges[i] = [];
       if(this.users[i].indexOf(0) < 0 && this.users[i].indexOf(1) < 0){
         for(var j = 0; j < this.matrix[i].length; ++j){
-          this.edges[i][j] = {from: this.userNodes[i].id, to: this.preferenceNodes[j].id, physics : false};
+          this.edges[i][j] = {from: this.userNodes[i].id, to: this.preferenceNodes[j].id, physics : false, smooth : {enable: false}};
           edgesArray.push(this.edges[i][j]);
         }
       }else{
@@ -96,9 +96,18 @@ Application = {
       },
       edges: {
         smooth: {
-          type: 'continuous'
+          type: 'continuous',
+          roundness : 0,
         },
         arrows: {to : true }
+      },
+      nodes:{
+        shadow:{
+          enabled: true,
+          size:10,
+          x:5,
+          y:5
+        },
       },
       physics:{
         enabled: true,
@@ -111,9 +120,9 @@ Application = {
   },
 
   drawMatrices : function(){
-    this.renderMatrix(this.users, $('#user-matrix'), "u");
-    this.renderMatrix(this.vectors, $('#vector-matrix'), "v");
-    this.renderMatrix(this.matrix, $('#original-matrix'), "v");
+    this.renderMatrix(this.users, $('#user-matrix'), "u", true);
+    this.renderMatrix(this.vectors, $('#vector-matrix'), "v", false);
+    this.renderMatrix(this.matrix, $('#original-matrix'), "v", false);
   },
 
   drawStepCount : function(){
@@ -200,6 +209,8 @@ Application = {
     var v = {};
     if(this.isSatisfiable(user,v)){ //ez itt nem tagadas
       this.isSatisfiedUser[i] = true;
+      var userNode = this.userNodes[i];
+      this.graphNodes.update({id: userNode.id, color: 'green'});
     }
   },
 
@@ -276,10 +287,13 @@ Application = {
 
 
 
-  renderMatrix : function(v, place, rowName){
+  renderMatrix : function(v, place, rowName, coloring){
     var m = "<table>";
     for(var i = 0; i < v.length; ++i){
-      m += "<tr>";
+      if(this.isSatisfiedUser[i] && coloring)
+        m += "<tr class=\"satified\">";
+      else
+        m += "<tr>";
       m += "<td>" + rowName + (i+1) + "</td>";
       for(var j = 0; j < v[i].length; ++j){
         m += "<td>" + (v[i][j] != -1? v[i][j] : "&nbsp;") + "</td>";
