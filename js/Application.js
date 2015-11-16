@@ -33,7 +33,6 @@ Application = {
     this.matrix = Matrices.matrix1;
     this.setEventListener();
     this.initVector();
-    console.log(this.actualAlgorithmData);
     this.constructConsistencyGraph(this.users, this.vectors);
   },
   // main function
@@ -120,16 +119,6 @@ Application = {
       physics:{
         enabled: true,
       },
-      /*groups: {
-        userGroup: {
-          shape: 'circle',
-          color : 'red'
-        },
-        vectorGroup: {
-          shape: 'circle',
-          font:{size:50}
-        }
-      }*/
     };
     this.graph = new vis.Network(container, data, options);
 
@@ -182,7 +171,7 @@ Application = {
                 myLoop(that.actualAlgorithmData.val, that.actualAlgorithmData.b);
               }
 
-         }, 200)
+         }, 1000)
       })(that.actualAlgorithmData.val, that.actualAlgorithmData.b);
   },
 
@@ -339,6 +328,13 @@ Application = {
 
 
   initGraph : function(){
+    this.isSatisfiedUser = [];
+    this.inIgnoreList = [];
+
+    this.edges = [[]];
+    this.userNodes = [];
+    this.preferenceNodes = [];
+
     clearTimeout(this.algorithmTimeout);
     this.initUserMatrix();
     this.constructConsistencyGraph(this.users, this.vectors);
@@ -346,7 +342,11 @@ Application = {
     this.bValue = null;
     this.oneStep = true;
     this.drawStepCount();
-    //this.actualAlgorithmData = {val: this.users.length, b: this.selectMostPopularItemFromUnsatisfiedUsers() };
+    this.actualAlgorithmData = {val: this.users.length, b: this.selectMostPopularItemFromUnsatisfiedUsers() };
+
+    for(var i = 0; i < this.users.length; ++i)
+      this.isSatisfiedUser[i] = false;
+
     $('#user-matrix tr').removeClass('satified');
   },
 
