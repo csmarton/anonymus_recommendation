@@ -180,13 +180,12 @@ Application = {
   	for(var i = 0; i<this.users.length; i++){
   	  for(var k = 0; k<this.vectors.length; k++){
         for(var j = 0; j<this.vectors[k].length; j++){
-          if(this.users[i][j] != this.vectors[k][j] && this.users[i][j] != -1) // ez is kell ide
+          if(this.users[i][j] != this.vectors[k][j] && this.users[i][j] != -1)
           {
             var removeEdge = this.edges[i][k];
             this.graphEdges.update({id: removeEdge.id, color: 'red'});
             (function(removeEdge) {
               setTimeout(function () {
-                console.log(removeEdge);
                 that.graphEdges.remove(removeEdge);
               }, 1000);
             })(removeEdge);
@@ -210,7 +209,6 @@ Application = {
     var ind;
     for(var i = 0; i<this.users.length; i++){
       var count = this.countItemsAccordingToUnsatisfiedUsers(i);
-      // egyenlőség esetén lehet hogy random kiválasztás kéne a maximumok közül
       if(max < count && this.inIgnoreList.indexOf(i) < 0){ // hogy ne sorsoljuk ki ujra ugyanazt az indexet
         max = count;
         ind = i;
@@ -235,16 +233,14 @@ Application = {
     var value = this.matrix[i][b]; //felfedjuk az eredeti matrixban az elemet
     user[b] = value; //user b kell
     var v = {};
-    if(this.isSatisfiable(user,v)){ //ez itt nem tagadas
+    if(this.isSatisfiable(user,v)){ 
       this.isSatisfiedUser[i] = true;
       var userNode = this.userNodes[i];
       this.graphNodes.update({id: userNode.id, color: 'green'});
     }
   },
 
-
-  //ez az akar lenni, hogy a user akkor kielegitheto, ha minden helyen, ahol a vektor 1-es, ott a user is 1-es, (fontos hogy nem forditva)
-  isSatisfiable(user, v){
+  isSatisfiable: function(user, v){
 	  var satisfiable = true;
 	  var count = 0;
     for(var i = 0; i<this.vectors.length; i++){
@@ -305,13 +301,6 @@ Application = {
     }
     this.vectors = array;
 
-    this.vectors = [
-      [1,1,0,0,0],
-      [0,0,0,1,1],
-      [1,1,1,1,0],
-      [0,1,1,0,0],
-      [0,0,0,0,1]
-    ];
     this.initUserMatrix();
 
     for(var i = 0; i < this.users.length; ++i){
