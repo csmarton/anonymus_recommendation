@@ -176,13 +176,20 @@ Application = {
   },
 
   repairConsistencyGraph : function(uInd){
+    var that = this;
   	for(var i = 0; i<this.users.length; i++){
   	  for(var k = 0; k<this.vectors.length; k++){
         for(var j = 0; j<this.vectors[k].length; j++){
           if(this.users[i][j] != this.vectors[k][j] && this.users[i][j] != -1) // ez is kell ide
           {
             var removeEdge = this.edges[i][k];
-            this.graphEdges.remove(removeEdge);
+            this.graphEdges.update({id: removeEdge.id, color: 'red'});
+            (function(removeEdge) {
+              setTimeout(function () {
+                console.log(removeEdge);
+                that.graphEdges.remove(removeEdge);
+              }, 1000);
+            })(removeEdge);
           }
         }
   	   }
@@ -298,6 +305,13 @@ Application = {
     }
     this.vectors = array;
 
+    this.vectors = [
+      [1,1,0,0,0],
+      [0,0,0,1,1],
+      [1,1,1,1,0],
+      [0,1,1,0,0],
+      [0,0,0,0,1]
+    ];
     this.initUserMatrix();
 
     for(var i = 0; i < this.users.length; ++i){
